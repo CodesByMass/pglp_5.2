@@ -64,19 +64,23 @@ public class DbConn {
         state.addBatch("DROP TABLE FaitPartie");
       }
 
-      state.addBatch("CREATE TABLE Personnel (" + "nom VARCHAR(255) NOT NULL , "
+      // Personnel
+      state.addBatch("CREATE TABLE Personnel (nom VARCHAR(255) NOT NULL , "
           + "prenom VARCHAR(255) NOT NULL , " + "date DATE DEFAULT 1970-01-01, "
           + "fonction VARCHAR(255) NOT NULL, " + "PRIMARY KEY (nom))");
+      // Groupe
       state.addBatch("CREATE TABLE Groupe( " + "NomGroupe " + "VARCHAR(255) NOT NULL , "
           + "PRIMARY KEY (NomGoup))");
-      state.addBatch(" CREATE TABLE NumPersonne ( " + "num VARCHAR(10) NOT NULL ,"
+      // Numéros
+      state.addBatch(" CREATE TABLE NumPersonne ( num VARCHAR(10) NOT NULL ,"
           + " nomPersonnel VARCHAR(255) NOT NULL, "
           + " type VARCHAR(255) NOT NULL DEFAULT 'mobile' ," + " PRIMARY KEY (num), "
-          + " CONSTRAINT fk_personne FOREIGN KEY nomPersonnel REFERENCES Personnel(nom)");
-      state.addBatch("CREATE TABLE  FaitPartie( " + "nomPersonnel" + " VARCHAR(255) NOT NULL , "
-          + "NomGroupe varchar(255) NOT NULL , " + "PRIMARY KEY (nomPersonnel,NomGroupe)) "
-          + " CONSTRAINT fk_personnel FOREIGN KEY nomPersonnel REFERENCES Personnel(nom)"
-          + " CONSTRAINT fk_groupe FOREIGN KEY nomGroupe REFERENCES Groupe(NomGroupe)");
+          + " CONSTRAINT fk_personne FOREIGN KEY nomPersonnel REFERENCES Personnel(nom))");
+      // Personnel rattaché à un groupe.
+      state.addBatch("CREATE TABLE  FaitPartie( nomGroupe varchar(255) NOT NULL ,"
+          + "nomPersonnel VARCHAR(255) NOT NULL , " + "PRIMARY KEY (nomPersonnel,NomGroupe), "
+          + " CONSTRAINT fk_personnel FOREIGN KEY (nomPersonnel) REFERENCES Personnel(nom),"
+          + " CONSTRAINT fk_groupe FOREIGN KEY (nomGroupe) REFERENCES Groupe(NomGroupe))");
 
       state.executeBatch();
     } catch (SQLException e) {
