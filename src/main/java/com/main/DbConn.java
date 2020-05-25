@@ -70,7 +70,8 @@ public class DbConn {
       state.addBatch("CREATE TABLE Groupe( " + "NomGroupe " + "VARCHAR(255) NOT NULL , "
           + "PRIMARY KEY (NomGoup))");
       state.addBatch(" CREATE TABLE NumPersonne ( " + "num VARCHAR(10) NOT NULL ,"
-          + " nomPersonnel VARCHAR(255) NOT NULL, " + " PRIMARY KEY (num) "
+          + " nomPersonnel VARCHAR(255) NOT NULL, "
+          + " type VARCHAR(255) NOT NULL DEFAULT 'mobile' ," + " PRIMARY KEY (num), "
           + " CONSTRAINT fk_personne FOREIGN KEY nomPersonnel REFERENCES Personnel(nom)");
       state.addBatch("CREATE TABLE  FaitPartie( " + "nomPersonnel" + " VARCHAR(255) NOT NULL , "
           + "NomGroupe varchar(255) NOT NULL , " + "PRIMARY KEY (nomPersonnel,NomGroupe)) "
