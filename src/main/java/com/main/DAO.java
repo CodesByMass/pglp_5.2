@@ -15,7 +15,7 @@ public interface DAO<T> {
    * Ajout de fichier.
    *
    * @param t L'employé à ajouter.
-   * @throws Exception
+   * @throws Exception si le type n'est pas un type dérivé de Personnel.
    */
   public void create(T t) throws Exception;
 
@@ -31,12 +31,12 @@ public interface DAO<T> {
    * Suppression de fichier.
    *
    * @param t le fichier à supprimer.
-   * @throws FileNotFoundException
+   * @throws FileNotFoundException si la structure à supprimer n'existe pas.
    */
   public void delete(T t) throws FileNotFoundException;
 
   /**
-   * Lecture de fichier
+   * Lecture de fichier.
    *
    * @param s le nom du fichier
    * @return un groupe ou un employé.

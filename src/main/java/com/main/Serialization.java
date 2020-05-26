@@ -12,9 +12,9 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
 /**
- * @author Mass'
+ * La classe de s�rialisation.
  *
- *         La classe de s�rialisation.
+ * @author Mass'
  */
 public class Serialization<T extends Serializable> {
 
@@ -47,13 +47,17 @@ public class Serialization<T extends Serializable> {
   /**
    * V�rifie si le fichier existe, le cr�e dans ce cas.
    *
-   * @param name nom du fichier.
+   * @param filename nom du fichier.
    * @return le fichier, cr�� si il n'existe pas.
    */
   public File createFile(String filename) {
     File temp = new File(filename);
     if (temp.exists()) {
-      temp.delete();
+      if (temp.delete()) {
+        System.out.println("Le fichier a été supprimé");
+      } else {
+        System.out.println("Le fichier n'a pas été supprimé");
+      }
     } else {
       return temp;
     }
@@ -61,7 +65,7 @@ public class Serialization<T extends Serializable> {
   }
 
   /**
-   * Lit le fichier pour extraire un objet
+   * Lit le fichier pour extraire un objet.
    *
    * @param filename Nom du fichier � lire
    * @return l'pobjet lu, si il existe
@@ -81,8 +85,9 @@ public class Serialization<T extends Serializable> {
       throw new Error("Une erreur s'est produite lors de la sérialisation");
     } finally {
       try {
-        if (ois != null)
+        if (ois != null) {
           ois.close();
+        }
       } catch (IOException e) {
         e.printStackTrace();
       }

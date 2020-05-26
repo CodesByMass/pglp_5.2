@@ -4,7 +4,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 
 /**
- * Implementation du DAO pour Personnel
+ * Implementation du DAO pour Personnel.
  *
  * @author Mass'
  *
@@ -44,7 +44,11 @@ public class PersonnelDAO extends Serialization<Personnel> implements DAO<Person
     if (!(tempFile.exists())) {
       throw new FileNotFoundException("Ce fichier n'existe pas !");
     } else {
-      tempFile.delete();
+      if (tempFile.delete()) {
+        System.out.println("Le fichier a été supprimé");
+      } else {
+        System.out.println("Le fichier n'a pas été supprimé");
+      }
       writeFile(t, t.getNom() + ".indiv");
     }
 
@@ -53,13 +57,17 @@ public class PersonnelDAO extends Serialization<Personnel> implements DAO<Person
   /**
    * Suppression d'un employé.
    *
-   * @throws FileNotFoundException
+   * @throws FileNotFoundException si l'employé à supprimer n'existe pas.
    */
   @Override
   public void delete(Personnel t) throws FileNotFoundException {
     File tempFile = new File(t.getNom() + ".indiv");
     if (tempFile.exists()) {
-      tempFile.delete();
+      if (tempFile.delete()) {
+        System.out.println("Le fichier a été supprimé");
+      } else {
+        System.out.println("Le fichier n'a pas été supprimé");
+      }
     } else {
       throw new FileNotFoundException("Cet objet n'existe pas");
     }

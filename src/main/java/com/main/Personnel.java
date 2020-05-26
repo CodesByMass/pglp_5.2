@@ -12,9 +12,7 @@ import java.util.ArrayList;
  */
 public class Personnel implements PrintPersonnel, Serializable {
 
-  /**
-   *
-   */
+
   private static final long serialVersionUID = -4922799134437944925L;
 
   private String nom;
@@ -60,6 +58,13 @@ public class Personnel implements PrintPersonnel, Serializable {
 
     private LocalDate birthDate = LocalDate.parse("1970-01-01");
 
+    /**
+     * Le builder d'un employé.
+     *
+     * @param nom de l'employé.
+     * @param prenom de l'employé.
+     * @param fonction de l'employé (directeur, adjoint...)
+     */
     public Builder(String nom, String prenom, String fonction) {
       this.nom = nom;
       this.prenom = prenom;

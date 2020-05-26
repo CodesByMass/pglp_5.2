@@ -30,15 +30,21 @@ public class CompositePersonnelJDBC implements DAO<CompositePersonnel> {
     try (Connection conn = DriverManager.getConnection(dburl)) {
       PreparedStatement prepare = conn.prepareStatement("INSERT INTO Groupe VALUES (?)");
       prepare.setString(1, t.getNomGroupe());
-      int result = prepare.executeUpdate();
-      assert result == 1;
+      prepare.executeUpdate();
+      prepare.close();
       // Ajouter les membres du groupe
       ArrayList<PrintPersonnel> listePersonnel = t.getPersonnel();
       for (PrintPersonnel personnel : listePersonnel) {
+        // Vérifier que l'employé est dans la base
+        PersonnelJDBC employe = new PersonnelJDBC();
+        if (employe.read(((Personnel) personnel).getNom()) == null) {
+          employe.create((Personnel) personnel);
+        }
         prepare = conn.prepareStatement("INSERT INTO FaitPartie VALUES (?, ?)");
         prepare.setString(1, t.getNomGroupe());
         prepare.setString(2, ((Personnel) personnel).getNom());
         prepare.executeUpdate();
+        prepare.close();
       }
     } catch (SQLException e) {
       e.printStackTrace();
@@ -57,12 +63,15 @@ public class CompositePersonnelJDBC implements DAO<CompositePersonnel> {
           conn.prepareStatement("DELETE FROM FaitPartie WHERE nomGroupe = ? ");
       prepare.setString(1, t.getNomGroupe());
       int result1 = prepare.executeUpdate();
-      assert result1 == 1;
-      for (PrintPersonnel p : newPersonnel) {
-        prepare = conn.prepareStatement("INSERT INTO FaitPartie VALUES (?, ?)");
-        prepare.setString(1, t.getNomGroupe());
-        prepare.setString(2, ((Personnel) p).getNom());
-        prepare.executeUpdate();
+      prepare.close();
+      if (result1 == 1) {
+        for (PrintPersonnel p : newPersonnel) {
+          prepare = conn.prepareStatement("INSERT INTO FaitPartie VALUES (?, ?)");
+          prepare.setString(1, t.getNomGroupe());
+          prepare.setString(2, ((Personnel) p).getNom());
+          prepare.executeUpdate();
+          prepare.close();
+        }
       }
     } catch (SQLException e) {
       e.printStackTrace();
@@ -78,16 +87,16 @@ public class CompositePersonnelJDBC implements DAO<CompositePersonnel> {
     try (Connection conn = DriverManager.getConnection(dburl)) {
       PreparedStatement prepare = conn.prepareStatement("DELETE FROM Groupe WHERE nomGroupe = ?");
       prepare.setString(1, t.getNomGroupe());
-      int result = prepare.executeUpdate();
-      assert result == 1;
+      prepare.executeUpdate();
+      prepare.close();
       ArrayList<PrintPersonnel> listePersonnel = t.getPersonnel();
       for (PrintPersonnel personnel : listePersonnel) {
         prepare = conn
             .prepareStatement("DELETE FROM FaitPartie WHERE nomGroupe = ? and nomPersonnel = ? ");
         prepare.setString(1, t.getNomGroupe());
         prepare.setString(2, ((Personnel) personnel).getNom());
-        int result1 = prepare.executeUpdate();
-        assert result1 == 1;
+        prepare.executeUpdate();
+        prepare.close();
       }
     } catch (SQLException e) {
       e.printStackTrace();
@@ -106,13 +115,14 @@ public class CompositePersonnelJDBC implements DAO<CompositePersonnel> {
           conn.prepareStatement("SELECT * FROM FaitPartie WHERE nomGroupe = ?");
       prepare.setString(1, s);
       ResultSet result = prepare.executeQuery();
+
       ArrayList<PrintPersonnel> listePersonnel = new ArrayList<PrintPersonnel>();
       PersonnelJDBC personnel = new PersonnelJDBC();
       while (result.next()) {
         listePersonnel.add(personnel.read(result.getString("nomPersonnel")));
       }
       group = new CompositePersonnel(s, listePersonnel);
-
+      prepare.close();
     } catch (SQLException e) {
       e.printStackTrace();
     }

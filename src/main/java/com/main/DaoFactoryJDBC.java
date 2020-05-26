@@ -1,7 +1,7 @@
 package com.main;
 
 /**
- * DAO Factory avec JDBC
+ * DAO Factory avec JDBC.
  *
  * @author Mass'
  *

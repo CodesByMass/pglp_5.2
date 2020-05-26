@@ -34,7 +34,11 @@ public class CompositePersonnelDAO extends Serialization<CompositePersonnel>
     if (!(tempFile.exists())) {
       throw new FileNotFoundException("Ce fichier n'existe pas !");
     } else {
-      tempFile.delete();
+      if (tempFile.delete()) {
+        System.out.println("Le fichier a été supprimé");
+      } else {
+        System.out.println("Le fichier n'a pas été supprimé");
+      }
       writeFile(t, t.getNomGroupe() + ".groupe");
     }
 
@@ -48,7 +52,11 @@ public class CompositePersonnelDAO extends Serialization<CompositePersonnel>
   public void delete(CompositePersonnel t) throws FileNotFoundException {
     File tempFile = new File(t.getNomGroupe() + ".groupe");
     if (tempFile.exists()) {
-      tempFile.delete();
+      if (tempFile.delete()) {
+        System.out.println("Le fichier a été supprimé");
+      } else {
+        System.out.println("Le fichier n'a pas été supprimé");
+      }
     } else {
       throw new FileNotFoundException("Cet objet n'existe pas");
     }

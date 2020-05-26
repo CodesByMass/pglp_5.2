@@ -14,9 +14,7 @@ import java.util.Iterator;
  */
 public class CompositePersonnel implements PrintPersonnel, Serializable, Iterable<PrintPersonnel> {
 
-  /**
-   *
-   */
+
   private static final long serialVersionUID = 6190276188322149977L;
   private String nomGroupe;
   private ArrayList<PrintPersonnel> listPersonnel;
@@ -35,14 +33,10 @@ public class CompositePersonnel implements PrintPersonnel, Serializable, Iterabl
     this.listPersonnel = liste;
   }
 
-  /**
-   *
-   * @return les membres du groupe.
-   */
-  public ArrayList<PrintPersonnel> getPersonnel() {
-    return this.getPersonnel();
-    // return ( ArrayList<InterfacePersonne>) Collections.unmodifiableList(this.personnel);
 
+
+  public ArrayList<PrintPersonnel> getPersonnel() {
+    return listPersonnel;
   }
 
   @Override
@@ -52,10 +46,20 @@ public class CompositePersonnel implements PrintPersonnel, Serializable, Iterabl
     }
   }
 
+  /**
+   * Ajoute un employé ou un sous groupe au groupe actuel.
+   *
+   * @param personnel Employé ou sous groupe.
+   */
   public void add(PrintPersonnel personnel) {
     listPersonnel.add(personnel);
   }
 
+  /**
+   * Supprime un employé ou un sous groupe au groupe actuel.
+   *
+   * @param personnel Employé ou sous groupe.
+   */
   public void delete(PrintPersonnel personnel) {
     if (listPersonnel.contains(personnel)) {
       listPersonnel.remove(personnel);

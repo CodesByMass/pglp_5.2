@@ -39,15 +39,21 @@ public class PersonnelJDBC implements DAO<Personnel> {
       prepare.setString(3, t.getBirthDate().toString());
       prepare.setString(4, t.getFonction());
       int result = prepare.executeUpdate();
-      assert result == 1;
+      if (result == 1) {
+        System.out.println("L'ajout de l'employé s'est bien déroulé");
+      }
+      prepare.close();
       for (PhoneNumber temp : t.getPhoneNumbers()) {
         PreparedStatement prepareNumber = conn.prepareStatement(
             "INSERT INTO NumPersonne (num, nomPersonnel, " + "type)" + "VALUES " + "( ?, ? , ?)");
         prepareNumber.setString(1, temp.getNumber());
         prepareNumber.setString(2, t.getNom());
         prepareNumber.setString(3, temp.getType());
-        int resultNumber = prepare.executeUpdate();
-        assert resultNumber == 1;
+        int resultNumber = prepareNumber.executeUpdate();
+        if (resultNumber == 1) {
+          System.out.println("L'ajout des numéros s'est bien passé");
+        }
+        prepareNumber.close();
       }
     } catch (SQLException e) {
       e.printStackTrace();
@@ -55,7 +61,6 @@ public class PersonnelJDBC implements DAO<Personnel> {
   }
 
   /**
-   *
    * Ici, je ne modifie que la date de naissance et la fonction de l'employé.
    */
   @Override
@@ -68,6 +73,7 @@ public class PersonnelJDBC implements DAO<Personnel> {
       prepare.setString(2, t.getBirthDate().toString());
       prepare.setString(3, t.getNom());
       int result = prepare.executeUpdate();
+      prepare.close();
       if (result != 1) {
         System.out.println("Cet utilisateur n'existe pas");
       } else {
@@ -85,6 +91,7 @@ public class PersonnelJDBC implements DAO<Personnel> {
       PreparedStatement prepare = conn.prepareStatement("DELETE FROM Personnel WHERE nom = ?");
       prepare.setString(1, t.getNom());
       int result = prepare.executeUpdate();
+      prepare.close();
       if (result == 1) {
         System.out.println(" L'employé a bien été supprimé");
       } else {
@@ -103,24 +110,30 @@ public class PersonnelJDBC implements DAO<Personnel> {
       PreparedStatement prepare = conn.prepareStatement("SELECT * FROM Personnel WHERE nom = ?");
       prepare.setString(1, s);
       ResultSet result = prepare.executeQuery();
-      if (result.next()) {
+
+      if (!result.next()) {
+
+        System.out.println("La personne recherchée n'existe pas");
+      } else {
+
         p = new com.main.Personnel.Builder(result.getString("nom"), result.getString("prenom"),
             result.getString("fonction"))
                 .addBirthDate(LocalDate.parse(result.getString("birthdate"))).build();
         result.close();
 
-      } else {
-        throw new SQLException("La personne recherchée n'existe pas");
+        // Récupérer les numéros de téléphone
+        PreparedStatement prepareNumbers =
+            conn.prepareStatement("SELECT * FROM NumPersonne WHERE nomPersonnel = ?");
+        prepareNumbers.setString(1, s);
+        ResultSet result2 = prepareNumbers.executeQuery();
+        while (result2.next()) {
+          p.getPhoneNumbers()
+              .add(new PhoneNumber(result2.getString("num"), result2.getString("type")));
+        }
+        prepareNumbers.close();
       }
-      // Récupérer les numéros de téléphone
-      PreparedStatement prepareNumbers =
-          conn.prepareStatement("SELECT * FROM NumPersonne WHERE nomPersonnel = ?");
-      prepareNumbers.setString(1, s);
-      ResultSet result2 = prepareNumbers.executeQuery();
-      while (result2.next()) {
-        p.getPhoneNumbers()
-            .add(new PhoneNumber(result2.getString("num"), result2.getString("type")));
-      }
+      prepare.close();
+
     } catch (SQLException e) {
       e.printStackTrace();
     }

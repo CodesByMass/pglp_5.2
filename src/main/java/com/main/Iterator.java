@@ -1,6 +1,7 @@
 package com.main;
 
 /**
+ * L'interface iterator.
  *
  * @author Mass'
  *

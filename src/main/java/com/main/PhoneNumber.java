@@ -1,12 +1,14 @@
 package com.main;
 
+import java.io.Serializable;
+
 /**
  * Définit le type du numéro de téléphone.
  *
  * @author Mass'
  *
  */
-public class PhoneNumber {
+public class PhoneNumber implements Serializable {
 
   private String type;
   private String number;
